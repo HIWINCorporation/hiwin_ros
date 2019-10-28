@@ -1,6 +1,6 @@
 # HIWIN ROS-I Package
 
-This package allows you to monitor and control HIWIN industrial robots within the ROS framework. HIWIN currently support the following support packages.
+This package allows you to monitor and control HIWIN industrial robots within the ROS framework. HIWIN currently support the following supports packages.
 - [RA605 710 GB Robotic arm](https://www.hiwin.tw/products/mar/articulated/ra605/ra605_710_gb.aspx) - 5kg payload industrial robot.
 - [RA610 1355 Robotic arm](https://www.hiwin.tw/products/mar/articulated/ra610/ra610_1355_gb.aspx) - 10kg playload industrial robot.
 - [RA620 1621 Robotic arm](https://www.hiwin.tw/products/mar/articulated/ra620/ra620_1621.aspx) - 20kg playload industrial robot.

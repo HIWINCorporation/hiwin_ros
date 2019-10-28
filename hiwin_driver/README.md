@@ -33,8 +33,8 @@ Currently supported robots:
   `roslaunch hiwin_driver hiwin_robot_interface.launch robot_ip:=<ip> robot_name:=<name>`
   
   Where:
-  - <ip> is the IP of the robot
-  - <name> is the name of the robot (default is "manipulator").
+  - `<ip>` is the IP of the robot
+  - `<name>` is the name of the robot (default is "manipulator").
   
 ### Run driver for HIWIN's Grippers (XEG Series)
 - Turn on the gripper as shown in the user manual.
@@ -43,8 +43,8 @@ Currently supported robots:
   `roslaunch hiwin_driver hiwin_gripper_interface.launch gripper_model:=<model> gripper_com_port:=<port> gripper_name:=<name>`
   
   Where:
-  - <model> is the model of the gripper to control (16 for XEG16, 32 for XEG32, etc.)
-  - <port> is the COM port to which the gripper is connected.
-  - <name> is the name of the gripper (default is "gripper").
+  - `<model>` is the model of the gripper to control (16 for XEG16, 32 for XEG32, etc.)
+  - `<port>` is the COM port to which the gripper is connected.
+  - `<name>` is the name of the gripper (default is "gripper").
   
 - If correctly connected, the gripper should execute a reset procedure.
