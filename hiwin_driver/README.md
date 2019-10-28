@@ -19,7 +19,7 @@ traditional ROS-Industrial protocol, connecting to a ROS Controller node on the 
 
 ## Get started
 Currently supported robots:
-- [RA605 710 GB Robotic arm](https://www.hiwin.tw/products/mar/articulated/rt605/ra605_710_gb.aspx)
+- [RA605 710 GB Robotic arm](https://www.hiwin.tw/products/mar/articulated/ra605/ra605_710_gb.aspx)
 - [RA610 1355 Robotic arm](https://www.hiwin.tw/products/mar/articulated/ra610/ra610_1355_gb.aspx)
 - [RA620 1621 Robotic arm](https://www.hiwin.tw/products/mar/articulated/ra620/ra620_1621.aspx)
 - [XEG16 electric gripper](https://www.hiwin.tw/products/ee/xeg/xeg_16.aspx)
