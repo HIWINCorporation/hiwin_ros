@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hiwin_robot_moveit_config</name>
+  <version>1.0.1</version>
+  <description>A general MoveIt! config package for HIWIN robots.</description>
+
+  <author email="giovanniventilii@hiwin.tw">Giovanni Ventilii</author>
+  <maintainer email="giovanniventilii@hiwin.tw">Giovanni Ventilii</maintainer>
+
+  <license>BSD-3-Clause</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>urdf</build_depend>
+  <build_depend>xacro</build_depend>
+  <build_export_depend>urdf</build_export_depend>
+  <build_export_depend>xacro</build_export_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+
+  <export> </export>
+
+</package>
