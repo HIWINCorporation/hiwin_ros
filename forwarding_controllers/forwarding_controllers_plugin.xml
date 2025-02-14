@@ -1,9 +1,0 @@
-<library path="lib/libforwarding_controllers">
-    <class name="forwarding_controllers/JointTrajectoryController"
-        type="forwarding_controllers::JointTrajectoryController"
-        base_class_type="controller_interface::ControllerBase">
-        <description>
-            This controller forwards joint trajectory goals to the robot for interpolation
-        </description>
-    </class>
-</library>
