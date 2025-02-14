@@ -1,0 +1,91 @@
+mesh_files:
+  base:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/base.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/base.stl
+      
+  link_1:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/link_1.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/link_1.stl
+
+  link_2:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/link_2.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/link_2.stl
+
+  link_3:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/link_3.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/link_3.stl
+
+  link_4:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/link_4.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/link_4.stl
+
+  link_5:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/link_5.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/link_5.stl
+
+  link_6:
+    visual:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/visual/link_6.stl
+      material:
+        name: "LightGrey"
+        color: "0.7 0.7 0.7 1.0"
+    collision:
+      mesh:
+        package: hiwin_description
+        path: meshes/ra610_1476/collision/link_6.stl

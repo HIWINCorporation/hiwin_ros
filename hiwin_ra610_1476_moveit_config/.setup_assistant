@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: hiwin_description
+    relative_path: urdf/ra.urdf.xacro
+    xacro_args: name:=ra610_1476 ra_type:=ra610_1476
+  SRDF:
+    relative_path: config/ra610_1476.srdf
+  CONFIG:
+    author_name: HIWIN Technologies Corp
+    author_email: hiwin_robot@hiwin.tw
+    generated_timestamp: 1739509915

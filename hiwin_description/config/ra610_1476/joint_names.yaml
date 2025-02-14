@@ -1,0 +1,3 @@
+controller_joint_names: [joint_1, joint_2, joint_3, joint_4, joint_5, joint_6, extra1, extra2, extra3]
+
+publish_joint_names:  [joint_1, joint_2, joint_3, joint_4, joint_5, joint_6]
