@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pass_through_controllers</name>
+  <version>0.0.0</version>
+  <description>The pass_through_controllers package</description>
+
+  <author>HIWIN Technologies Corp</author>
+  <maintainer email="hiwin_robot@hiwin.tw">HIWIN Technologies Corp</maintainer>
+
+  <license>Apache-2.0</license>
+
+  <url type="repository">https://github.com/HIWINCorporation/hiwin_ros.git</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>control_msgs</depend>
+  <depend>controller_interface</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>roscpp</depend>
+  <depend>realtime_tools</depend>
+  <depend>trajectory_msgs</depend>
+
+  <export>
+    <controller_interface plugin="${prefix}/pass_through_controllers_plugin.xml" />
+  </export>
+</package>

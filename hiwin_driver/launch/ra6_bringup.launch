@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="ns" default="robot_1" doc="" />
+    <!-- -->
+    <arg name="ns" default="robot_1" doc="Namespace for the robot." />
     <!-- Type or series of the HIWIN robot. -->
     <arg name="ra_type" default="" doc="Type/series of used HIWIN robot." />
     <!-- IP address for the robot connection. -->

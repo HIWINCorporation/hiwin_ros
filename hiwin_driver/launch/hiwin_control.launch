@@ -30,9 +30,9 @@
     <node name="joint_trajectory_action" pkg="industrial_robot_client"
         type="joint_trajectory_action" />
 
+    <!--  -->
     <node name="joint_states_without_extra" pkg="hiwin_driver"
-        type="joint_states_without_extra_node"
-        output="screen">
+        type="joint_states_without_extra_node" output="screen">
     </node>
 
 </launch>

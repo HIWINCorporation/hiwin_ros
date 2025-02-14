@@ -1,0 +1,9 @@
+<library path="lib/libpass_through_controllers">
+    <class name="pass_through_controllers/JointTrajectoryController"
+        type="pass_through_controllers::JointTrajectoryController"
+        base_class_type="controller_interface::ControllerBase">
+        <description>
+            This controller pass through joint trajectory goals to the robot for interpolation
+        </description>
+    </class>
+</library>

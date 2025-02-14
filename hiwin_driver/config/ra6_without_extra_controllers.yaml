@@ -16,12 +16,7 @@ joint_state_controller:
    publish_rate: *loop_hz
 
 forward_joint_traj_controller:
-   type: "forwarding_controllers/JointTrajectoryController"
-   joints: *robot_joints
-   state_publish_rate: *loop_hz
-
-pos_joint_traj_controller:
-   type: position_controllers/JointTrajectoryController
+   type: "pass_through_controllers/JointTrajectoryController"
    joints: *robot_joints
    state_publish_rate: *loop_hz
 

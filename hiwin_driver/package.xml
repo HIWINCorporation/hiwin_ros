@@ -18,11 +18,11 @@
 
   <depend>control_msgs</depend>
   <depend>controller_manager</depend>
-  <depend>forwarding_controllers</depend>
   <depend>hardware_interface</depend>
-  <depend>hiwin_robot_client_library</depend>
   <depend>pluginlib</depend>
+  <depend>pass_through_controllers</depend>
   <depend>roscpp</depend>
+  <depend>std_srvs</depend>
 
   <exec_depend>industrial_robot_status_controller</exec_depend>
   <exec_depend>joint_state_controller</exec_depend>

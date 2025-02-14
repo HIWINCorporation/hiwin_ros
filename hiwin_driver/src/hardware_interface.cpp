@@ -17,15 +17,11 @@
  * -- END LICENSE BLOCK ------------------------------------------------
  */
 
-#include <time.h>
+#include <std_srvs/Trigger.h>
 
-#include <pluginlib/class_list_macros.hpp>
+#include "hiwin_driver/hardware_interface.h"
 
-#include <hiwin_driver/hardware_interface.h>
-
-#define NSEC_PER_SEC (1000000000)
-#define DIFF_NS(A, B) (((B).tv_sec - (A).tv_sec) * NSEC_PER_SEC + (B).tv_nsec - (A).tv_nsec)
-#define MEASURE_TIMING
+#define ROBOT_REQUIRED_VERSION "4.0.0"
 
 using industrial_robot_status_interface::RobotMode;
 using industrial_robot_status_interface::TriState;
@@ -55,10 +51,6 @@ bool HardwareInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
   joint_positions_.resize(joint_names_.size(), 0);
   joint_velocities_.resize(joint_names_.size(), 0);
   joint_efforts_.resize(joint_names_.size(), 0);
-  joint_position_command_.resize(joint_names_.size(), 0);
-  joint_trajectory_command_.resize(joint_names_.size(), 0);
-  target_joint_positions_.resize(joint_names_.size(), 0);
-  target_joint_velocities_.resize(joint_names_.size(), 0);
 
   // Create ros_control interfaces
   for (std::size_t i = 0; i < joint_names_.size(); ++i)
@@ -69,13 +61,9 @@ bool HardwareInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
     js_interface_.registerHandle(hardware_interface::JointStateHandle(joint_names_[i], &joint_positions_[i],
                                                                       &joint_velocities_[i], &joint_efforts_[i]));
 
-    // Create joint position control interface
-    pj_interface_.registerHandle(
-        hardware_interface::JointHandle(js_interface_.getHandle(joint_names_[i]), &joint_position_command_[i]));
-
-    // Create joint trajectory control interface
-    jnt_traj_interface_.registerHandle(hardware_interface::JointTrajectoryHandle(
-        js_interface_.getHandle(joint_names_[i]), &joint_trajectory_command_[i]));
+    // Create joint trajectory interface
+    jnt_traj_interface_.registerHandle(
+        hardware_interface::JointTrajectoryHandle(js_interface_.getHandle(joint_names_[i])));
   }
 
   jnt_traj_interface_.registerGoalCallback(
@@ -87,12 +75,25 @@ bool HardwareInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw
 
   // Register interfaces
   registerInterface(&js_interface_);
-  registerInterface(&pj_interface_);
   registerInterface(&jnt_traj_interface_);
   registerInterface(&robot_status_interface_);
 
+  //
   hiwin_driver_.reset(new hrsdk::HIWINDriver(robot_ip_));
   hiwin_driver_->connect();
+  hiwin_driver_->getRobotVersion(robot_version_);
+  if (hiwin_driver_->isVersionGreaterOrEqual(ROBOT_REQUIRED_VERSION))
+  {
+    is_min_version_met = true;
+  }
+  else
+  {
+    is_min_version_met = false;
+    ROS_WARN("Warning: Robot version (%s) is lower than the required version (%s). Please update the software.",
+             robot_version_.c_str(), ROBOT_REQUIRED_VERSION);
+  }
+
+  srv_clear_error_ = root_nh.advertiseService("clear_error", &HardwareInterface::clearErrorCb, this);
 
   return true;
 }
@@ -113,7 +114,7 @@ void HardwareInterface::read(const ros::Time& time, const ros::Duration& period)
   {
     robot_status_resource_.mode = RobotMode::UNKNOWN;
   }
-  
+
   robot_status_resource_.drives_powered = (hiwin_driver_->isDrivesPowered()) ? TriState::TRUE : TriState::FALSE;
   robot_status_resource_.in_error = (hiwin_driver_->isInError()) ? TriState::TRUE : TriState::FALSE;
   robot_status_resource_.motion_possible = (hiwin_driver_->isMotionPossible()) ? TriState::TRUE : TriState::FALSE;
@@ -127,17 +128,9 @@ void HardwareInterface::read(const ros::Time& time, const ros::Duration& period)
   control_msgs::FollowJointTrajectoryFeedback feedback = control_msgs::FollowJointTrajectoryFeedback();
   for (size_t i = 0; i < joint_names_.size(); i++)
   {
-    // not provide command return
-    target_joint_positions_[i] = joint_positions_[i];
-    target_joint_velocities_[i] = joint_velocities_[i];
-
     feedback.joint_names.push_back(joint_names_[i]);
-    feedback.desired.positions.push_back(target_joint_positions_[i]);
-    feedback.desired.velocities.push_back(target_joint_velocities_[i]);
     feedback.actual.positions.push_back(joint_positions_[i]);
     feedback.actual.velocities.push_back(joint_velocities_[i]);
-    feedback.error.positions.push_back(std::abs(joint_positions_[i] - target_joint_positions_[i]));
-    feedback.error.velocities.push_back(std::abs(joint_velocities_[i] - target_joint_velocities_[i]));
   }
   jnt_traj_interface_.setFeedback(feedback);
 }
@@ -179,56 +172,68 @@ bool HardwareInterface::shouldResetControllers()
 
 void HardwareInterface::startJointInterpolation(const control_msgs::FollowJointTrajectoryGoal& trajectory)
 {
-  ROS_DEBUG("Starting joint-based trajectory forward");
-
-#ifdef MEASURE_TIMING
-  struct timespec start_time;
-  struct timespec end_time;
-  uint32_t exec_ns = 0;
-  uint32_t exec_max_ns = 0;
-  uint32_t exec_min_ns = 0xFFFFFFFF;
-#endif
-
   size_t point_number = trajectory.trajectory.points.size();
-  double last_time = 0.0;
 
-  for (size_t i = 0; i < point_number; i++)
+  if (is_min_version_met)
   {
-    trajectory_msgs::JointTrajectoryPoint point = trajectory.trajectory.points[i];
-    std::vector<double> p;
-    for (size_t j = 0; j < point.positions.size(); j++)
+    double last_time = 0.0;
+
+    for (size_t i = 0; i < point_number; i++)
     {
-      p.push_back(point.positions[j]);
+      trajectory_msgs::JointTrajectoryPoint point = trajectory.trajectory.points[i];
+      std::vector<double> p;
+      for (size_t j = 0; j < point.positions.size(); j++)
+      {
+        p.push_back(point.positions[j]);
+      }
+
+      double next_time = point.time_from_start.toSec();
+
+      if (point.velocities.size() == point.positions.size() && point.accelerations.size() == point.positions.size())
+      {
+        std::vector<double> v;
+        std::vector<double> a;
+        for (size_t j = 0; j < point.positions.size(); j++)
+        {
+          v.push_back(point.velocities[j]);
+          a.push_back(point.accelerations[j]);
+        }
+
+        hiwin_driver_->writeTrajectorySplinePoint(p, v, a, next_time - last_time);
+      }
+      else if (point.velocities.size() == point.positions.size())
+      {
+        std::vector<double> v;
+        for (size_t j = 0; j < point.positions.size(); j++)
+        {
+          v.push_back(point.velocities[j]);
+        }
+        hiwin_driver_->writeTrajectorySplinePoint(p, v, next_time - last_time);
+      }
+      else
+      {
+        hiwin_driver_->writeTrajectorySplinePoint(p, next_time - last_time);
+      }
+
+      last_time = next_time;
     }
-
-    double next_time = point.time_from_start.toSec();
-
-#ifdef MEASURE_TIMING
-    clock_gettime(CLOCK_MONOTONIC, &start_time);
-#endif
-
-    hiwin_driver_->writeJointCommand(p, next_time - last_time);
-
-#ifdef MEASURE_TIMING
-    clock_gettime(CLOCK_MONOTONIC, &end_time);
-    exec_ns = DIFF_NS(start_time, end_time);
-    if (exec_ns > exec_max_ns)
-    {
-      exec_max_ns = exec_ns;
-    }
-    if (exec_ns < exec_min_ns)
-    {
-      exec_min_ns = exec_ns;
-    }
-#endif
-
-    last_time = next_time;
   }
+  else
+  {
+    ROS_WARN("Warning: Robot version (%s) is lower than the required version (%s). Please update the software.",
+             robot_version_.c_str(), ROBOT_REQUIRED_VERSION);
 
-#ifdef MEASURE_TIMING
-  ROS_DEBUG("Trajectory points number: %4d, exec(ns): %10u ... %10u", static_cast<int>(point_number), exec_min_ns,
-            exec_max_ns);
-#endif
+    for (size_t i = 0; i < point_number; i++)
+    {
+      trajectory_msgs::JointTrajectoryPoint point = trajectory.trajectory.points[i];
+      std::vector<double> p;
+      for (size_t j = 0; j < point.positions.size(); j++)
+      {
+        p.push_back(point.positions[j]);
+      }
+      hiwin_driver_->writeJointCommand(p);
+    }
+  }
 }
 
 void HardwareInterface::abortMotion()
@@ -237,6 +242,18 @@ void HardwareInterface::abortMotion()
   hiwin_driver_->motionAbort();
 }
 
+bool HardwareInterface::clearErrorCb(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& resp)
+{
+  resp.success = true;
+  resp.message = "";
+
+  hiwin_driver_->clearError();
+
+  return true;
+}
+
 }  // namespace hiwin_driver
+
+#include <pluginlib/class_list_macros.hpp>
 
 PLUGINLIB_EXPORT_CLASS(hiwin_driver::HardwareInterface, hardware_interface::RobotHW);

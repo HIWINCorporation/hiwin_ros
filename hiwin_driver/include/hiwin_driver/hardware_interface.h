@@ -20,14 +20,19 @@
 #ifndef HIWIN_DRIVER_HARDWARE_INTERFACE_H_
 #define HIWIN_DRIVER_HARDWARE_INTERFACE_H_
 
+#include <vector>
+#include <string>
+#include <memory>
+
 #include <hardware_interface/robot_hw.h>
-#include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>
 
 #include <control_msgs/FollowJointTrajectoryGoal.h>
 #include <control_msgs/FollowJointTrajectoryFeedback.h>
 
-#include <forwarding_controllers/joint_trajectory_interface.h>
+#include <std_srvs/Trigger.h>
+
+#include <pass_through_controllers/joint_trajectory_interface.h>
 
 #include <industrial_robot_status_interface/industrial_robot_status_interface.h>
 
@@ -92,27 +97,25 @@ public:
 protected:
   void startJointInterpolation(const control_msgs::FollowJointTrajectoryGoal& trajectory);
   void abortMotion();
+  bool clearErrorCb(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& resp);
 
   hardware_interface::JointStateInterface js_interface_;
-  hardware_interface::PositionJointInterface pj_interface_;
   hardware_interface::JointTrajectoryInterface jnt_traj_interface_;
 
   std::vector<std::string> joint_names_;
   std::vector<double> joint_positions_;
   std::vector<double> joint_velocities_;
   std::vector<double> joint_efforts_;
-  std::vector<double> joint_position_command_;
-  std::vector<double> joint_trajectory_command_;
-
-  std::vector<double> target_joint_positions_;
-  std::vector<double> target_joint_velocities_;
 
   std::atomic<bool> controller_reset_necessary_;
+  ros::ServiceServer srv_clear_error_;
 
   industrial_robot_status_interface::RobotStatus robot_status_resource_{};
   industrial_robot_status_interface::IndustrialRobotStatusInterface robot_status_interface_{};
 
   std::string robot_ip_;
+  std::string robot_version_;
+  bool is_min_version_met;
   std::unique_ptr<hrsdk::HIWINDriver> hiwin_driver_;
 };
 

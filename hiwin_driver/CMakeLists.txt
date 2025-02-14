@@ -7,13 +7,14 @@ find_package(catkin REQUIRED
   COMPONENTS
     control_msgs
     controller_manager
-    forwarding_controllers
     hardware_interface
     industrial_robot_status_interface
     pluginlib
+    pass_through_controllers
     roscpp
+    std_srvs
 )
-find_package(hiwin_robot_client_library 0.0.2 REQUIRED)
+find_package(hiwin_robot_client_library 0.0.3 REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS 
@@ -22,10 +23,11 @@ catkin_package(
     hiwin_driver_plugin
   CATKIN_DEPENDS
     controller_manager
-    forwarding_controllers
     hardware_interface
     pluginlib
+    pass_through_controllers
     roscpp
+    std_srvs
   DEPENDS
     hiwin_robot_client_library
 )
