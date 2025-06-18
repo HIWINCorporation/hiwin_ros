@@ -29,8 +29,8 @@
     <!--   - replace these calls with appropriate robot-specific calls or launch files -->
     <group unless="$(arg sim)">
         <include file="$(find hiwin_driver)/launch/hiwin_control.launch">
-          <arg name="controller_config_file" value="$(find hiwin_driver)/config/ra6_without_extra_controllers.yaml" />
-          <arg name="robot_ip" value="$(arg robot_ip)" />
+            <arg name="controller_config_file" value="$(find hiwin_driver)/config/ra6_without_extra_controllers.yaml" />
+            <arg name="robot_ip" value="$(arg robot_ip)" />
         </include>
     </group>
 
@@ -43,7 +43,7 @@
     </include>
 
     <include file="$(find hiwin_ra610_1869_moveit_config)/launch/moveit_rviz.launch">
-        <arg name="config" value="true" />
+        <arg name="config" value="$(find hiwin_ra610_1869_moveit_config)/launch/moveit.rviz"/>
     </include>
 
     <include file="$(find hiwin_ra610_1869_moveit_config)/launch/default_warehouse_db.launch" />

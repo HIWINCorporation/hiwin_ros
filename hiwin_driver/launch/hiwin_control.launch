@@ -3,36 +3,28 @@
     <!-- IP address for the robot connection. -->
     <arg name="robot_ip" doc="IP address by which the robot can be reached." />
     <!-- Controller configuration file -->
-    <arg name="controller_config_file"
-        doc="Config file used for defining the ROS-Control controllers." />
-    <arg name="controllers"
-        default="forward_joint_traj_controller joint_state_controller robot_status_controller"
-        doc="Controllers that are activated by default." />
+    <arg name="controller_config_file" doc="Config file used for defining the ROS-Control controllers." />
+    <arg name="controllers" default="pass_through_joint_traj_controller joint_state_controller robot_status_controller" doc="Controllers that are activated by default." />
 
     <!-- Load controller settings -->
     <rosparam file="$(arg controller_config_file)" command="load" />
     <!-- Load the ROS Control controller configuration from the specified YAML file. -->
 
     <!-- Load hardware interface -->
-    <node name="hiwin_hardware_interface" pkg="hiwin_driver" type="hiwin_driver_node"
-        output="screen">
+    <node name="hiwin_hardware_interface" pkg="hiwin_driver" type="hiwin_driver_node" output="screen">
         <param name="robot_ip" type="str" value="$(arg robot_ip)" />
     </node>
 
     <!-- Spawn controller manager -->
-    <node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner"
-        respawn="false"
-        output="screen" args="$(arg controllers) --timeout 60" />
+    <node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="$(arg controllers) --timeout 60" />
     <!-- Start the controller manager and spawn the controllers specified in the 'controllers'
     argument. -->
 
     <!-- joint_trajectory_action: provides actionlib interface for high-level robot control -->
-    <node name="joint_trajectory_action" pkg="industrial_robot_client"
-        type="joint_trajectory_action" />
+    <node name="joint_trajectory_action" pkg="industrial_robot_client" type="joint_trajectory_action" />
 
     <!--  -->
-    <node name="joint_states_without_extra" pkg="hiwin_driver"
-        type="joint_states_without_extra_node" output="screen">
+    <node name="joint_states_without_extra" pkg="hiwin_driver" type="joint_states_without_extra_node" output="screen">
     </node>
 
 </launch>

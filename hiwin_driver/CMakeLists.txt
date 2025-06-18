@@ -14,7 +14,11 @@ find_package(catkin REQUIRED
     roscpp
     std_srvs
 )
-find_package(hiwin_robot_client_library 0.0.3 REQUIRED)
+
+find_package(hiwin_robot_client_library)
+if (hiwin_robot_client_library_VERSION VERSION_LESS "0.0.4")
+  message(FATAL_ERROR "hiwin_robot_client_library version >= 0.0.4 is required. Found ${hiwin_robot_client_library_VERSION}")
+endif()
 
 catkin_package(
   INCLUDE_DIRS 

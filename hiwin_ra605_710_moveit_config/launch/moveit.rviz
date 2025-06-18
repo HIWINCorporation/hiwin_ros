@@ -17,9 +17,9 @@ Panels:
 Visualization Manager:
   Class: ""
   Displays:
-    - Alpha: 0.5
+    - Class: rviz/Grid
+      Alpha: 0.5
       Cell Size: 1
-      Class: rviz/Grid
       Color: 160; 160; 164
       Enabled: true
       Line Style:
@@ -35,6 +35,15 @@ Visualization Manager:
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
+    - Class: rviz/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0.0
+      Visual Enabled: true
+      Collision Enabled: false
+      Alpha: 1
     - Class: moveit_rviz_plugin/MotionPlanning
       Enabled: true
       Name: MotionPlanning
@@ -80,7 +89,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: world
+    Fixed Frame: base_link
   Name: root
   Tools:
     - Class: rviz/Interact

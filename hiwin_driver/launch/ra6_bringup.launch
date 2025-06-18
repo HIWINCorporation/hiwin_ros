@@ -1,21 +1,24 @@
 <?xml version="1.0"?>
 <launch>
     <!-- -->
-    <arg name="ns" default="robot_1" doc="Namespace for the robot." />
+    <arg name="ns" default="" doc="Namespace for the robot." />
     <!-- Type or series of the HIWIN robot. -->
     <arg name="ra_type" default="" doc="Type/series of used HIWIN robot." />
     <!-- IP address for the robot connection. -->
     <arg name="robot_ip" doc="IP address by which the robot can be reached." />
     <!-- Controller configuration file -->
-    <arg name="controller_config_file" default="$(find hiwin_driver)/config/ra6_controllers.yaml"
-        doc="Config file used for defining the ROS-Control controllers." />
+    <arg name="controller_config_file" default="$(find hiwin_driver)/config/ra6_controllers.yaml" doc="Config file used for defining the ROS-Control controllers." />
 
-    <group ns="$(arg ns)">
-        <rosparam command="load"
-            file="$(find hiwin_description)/config/$(arg ra_type)/joint_names.yaml" />
+    <!-- If ns is NOT empty -->
+    <group ns="$(arg ns)" if="$(eval ns != '')">
+        <rosparam command="load" file="$(find hiwin_description)/config/$(arg ra_type)/joint_names.yaml" />
+        <include file="$(find hiwin_driver)/launch/hiwin_control.launch" pass_all_args="true" />
+    </group>
 
-        <include file="$(find hiwin_driver)/launch/hiwin_control.launch" pass_all_args="true">
-        </include>
+    <!-- If ns is empty -->
+    <group if="$(eval ns == '')">
+        <rosparam command="load" file="$(find hiwin_description)/config/$(arg ra_type)/joint_names.yaml" />
+        <include file="$(find hiwin_driver)/launch/hiwin_control.launch" pass_all_args="true" />
     </group>
 
 </launch>

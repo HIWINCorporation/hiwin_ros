@@ -43,7 +43,7 @@
     </include>
 
     <include file="$(find hiwin_ra605_710_moveit_config)/launch/moveit_rviz.launch">
-        <arg name="config" value="true" />
+        <arg name="config" value="$(find hiwin_ra605_710_moveit_config)/launch/moveit.rviz"/>
     </include>
 
     <include file="$(find hiwin_ra605_710_moveit_config)/launch/default_warehouse_db.launch" />
